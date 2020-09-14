@@ -96,12 +96,36 @@ Most websites have a lot of structure, as most pages are connected to the homepa
 
 <pre><code>
 run pagerank.py --data=./lawfareblog.csv.gz
+DEBUG:root:computing indices
+DEBUG:root:computing values
+INFO:root:rank=0 pagerank=2.8757e-01 url=www.lawfareblog.com/masthead
+INFO:root:rank=1 pagerank=2.8757e-01 url=www.lawfareblog.com/lawfare-job-board
+INFO:root:rank=2 pagerank=2.8757e-01 url=www.lawfareblog.com/litigation-documents-resources-related-travel-ban
+INFO:root:rank=3 pagerank=2.8757e-01 url=www.lawfareblog.com/subscribe-lawfare
+INFO:root:rank=4 pagerank=2.8757e-01 url=www.lawfareblog.com/our-comments-policy
+INFO:root:rank=5 pagerank=2.8757e-01 url=www.lawfareblog.com/upcoming-events
+INFO:root:rank=6 pagerank=2.8757e-01 url=www.lawfareblog.com/support-lawfare
+INFO:root:rank=7 pagerank=2.8757e-01 url=www.lawfareblog.com/snowden-revelations
+INFO:root:rank=8 pagerank=2.8757e-01 url=www.lawfareblog.com/about-lawfare-brief-history-term-and-site
+INFO:root:rank=9 pagerank=2.8757e-01 url=www.lawfareblog.com/topics
 </code></pre>
 
 But these pages are generally not useful if we want to learn what the blog's most popular content was. To collect data on articles, which will generally have fewer pages linking to them than broader pages, we can use the <code>--filter_ratio</code> argument. It removes "all pages with more links than the specified ration" (Prof. Izbicki). Now, we can estimate the most important articles:
 
 <pre><code>
 run pagerank.py --data=./lawfareblog.csv.gz --filter_ratio=0.2
+DEBUG:root:computing indices
+DEBUG:root:computing values
+INFO:root:rank=0 pagerank=3.6463e-01 url=www.lawfareblog.com/trump-asks-supreme-court-stay-congressional-subpeona-tax-returns
+INFO:root:rank=1 pagerank=3.0601e-01 url=www.lawfareblog.com/livestream-nov-21-impeachment-hearings-0
+INFO:root:rank=2 pagerank=3.0129e-01 url=www.lawfareblog.com/opening-statement-david-holmes
+INFO:root:rank=3 pagerank=1.4923e-01 url=www.lawfareblog.com/lawfare-podcast-ben-nimmo-whack-mole-game-disinformation
+INFO:root:rank=4 pagerank=1.4814e-01 url=www.lawfareblog.com/lawfare-podcast-week-was-impeachment
+INFO:root:rank=5 pagerank=1.4171e-01 url=www.lawfareblog.com/todays-headlines-and-commentary-1964
+INFO:root:rank=6 pagerank=1.4171e-01 url=www.lawfareblog.com/todays-headlines-and-commentary-1963
+INFO:root:rank=7 pagerank=1.4137e-01 url=www.lawfareblog.com/cyberlaw-podcast-mistrusting-google
+INFO:root:rank=8 pagerank=1.4046e-01 url=www.lawfareblog.com/lawfare-podcast-bonus-edition-gordon-sondland-vs-committee-no-bull
+INFO:root:rank=9 pagerank=1.4039e-01 url=www.lawfareblog.com/todays-headlines-and-commentary-1962
 </code></pre>
 
 **Part 4: Eigengaps**
@@ -112,10 +136,33 @@ The eigengap of the P barbar matrix is bounded by the alpha parameter. The size 
 [In]: pagerank.py --data=./lawfareblog.csv.gz --verbose --filter_ratio=0.2
 [In]: pagerank.py --data=./lawfareblog.csv.gz --verbose --filter_ratio=0.2 --alpha=0.99999
 </code></pre>
-While the first three commands take iterations, the final one takes x iterations. This is because the filtered P matrix has a smaller eigengap, so at larger alpha bounds, it takes longer to converge. This change in the alpha value also results in different PageRank rankings.
+While the first three commands took roughly iterations, the final one takes x iterations. This is because the filtered P matrix has a smaller eigengap, so at larger alpha bounds, it takes longer to converge. This change in the alpha value also results in different PageRank rankings.
 <pre><code>
 [In]: pagerank.py --data=./lawfareblog.csv.gz --verbose --filter_ratio=0.2
 </code></pre>
 <pre><code>
 [In]: pagerank.py --data=./lawfareblog.csv.gz --verbose --filter_ratio=0.2 --alpha=0.99999
 </code></pre>
+
+## Task 2: Implementing the Personalization Vector
+**Part 1: Basic Power Method Implementation**
+The personalization vector is alternative method of filtering via queries. The personalization vector determine which webpages are linked to most often from pages that are about the query itself. This is different than the previous <code>--search_query</code> argument which determines an overall PageRank, then filters for the highest ranked matches that are related to the query. To demonstrate this, we can compare the rankings of the same query when using the personalization vector versus the <code>--search_query</code> argument. 
+<pre><code>
+[In]: pagerank.py --data=./lawfareblog.csv.gz --filter_ratio=0.2 --personalization_vector_query=corona
+</code></pre>
+<pre><code>
+[In]: pagerank.py --data=./lawfareblog.csv.gz --filter_ratio=0.2 --search_query=corona
+</code></pre>
+
+**Part 2: Finding articles that are related, but don't mention our query**
+The personalization vector is especially useful because it tracks which articles are most relevant to the query. This means that if we want to learn about the indirect effects our query may be having, we can still use the same personalization vector search query. Meanwhile, we can use the <code>--search_query</code> argument to present only those articles do not include the query itself. We get the following results for 'corona':
+<pre><code>
+[In]: pagerank.py --data=./lawfareblog.csv.gz --filter_ratio=0.2 --personalization_vector_query=corona --search_query=-corona
+</code></pre>
+
+**Part 3: Finding articles that are related, but don't mention our query (cont.)**
+We can take a look at another example of the above, where articles are related, but do not explicitly mention the query. For 'iran', we ge the following results:
+<pre><code>
+[In]: pagerank.py --data=./lawfareblog.csv.gz --filter_ratio=0.2 --personalization_vector_query=iran --search_query=-iran
+</code></pre>
+

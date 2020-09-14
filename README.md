@@ -8,8 +8,8 @@ We begin by constructing a Markov matrix P, where each entry ij "is the proababi
 **Part 1: Basic Power Method Implementation**
 After implementing the algorithm, we can test the basic algorithm on a 6 webpage graph, similar to the one used in *Langville and Meyer 2004*. We obtain the following result:
 Note that the verbose tag has been turned on to demonstrate how in the DEBUG statements, the algorithm converges, toward the constant *epsilon* term 1e-6. The pages have been ranked with the fourth URL being the highest ranked, and the first URL being the lowest. These results are similar to those obtained in Prof. Izbicki's implementation.
-<pre><code>
-[In]: run pagerank.py --data=small.csv.gz --verbose
+
+<pre><code>[In]: run pagerank.py --data=small.csv.gz --verbose
 DEBUG:root:computing indices
 DEBUG:root:computing values
 DEBUG:root:root=i=0 accuracy=2.7229e-01
@@ -41,15 +41,13 @@ INFO:root:rank=1 pagerank=5.3070e-01 url=6
 INFO:root:rank=2 pagerank=4.1114e-01 url=5
 INFO:root:rank=3 pagerank=2.0103e-01 url=2
 INFO:root:rank=4 pagerank=1.5937e-01 url=3
-INFO:root:rank=5 pagerank=1.4440e-01 url=1
-</code></pre>
+INFO:root:rank=5 pagerank=1.4440e-01 url=1</code></pre>
 
 **Part 2: Search Queries**
-Next, we can use a number of command line arguments to refine our search. The algorithm will now return those pages most relevant to our queries. The <code>--search_query</code>argument accepts a string and compares it with each links and filters out those links that do not include the query. For this portion, I use a dataset prepared by Professor Mike Izbicki that graphs hyperlinks from the defense blog www.lawfareblog.com. From this point forward, I will not use the verbose command to make results more concise. The results below are similar to those obtained in Prof. Izbicki's implementation.
+Next, we can use a number of command line arguments to refine our search. The algorithm will now return those pages most relevant to our queries. The <code>--search_query</code> argument accepts a string and compares it with each links and filters out those links that do not include the query. For this portion, I use a dataset prepared by Professor Mike Izbicki that graphs hyperlinks from the defense blog www.lawfareblog.com. From this point forward, I will not use the verbose command to make results more concise. The results below are similar to those obtained in Prof. Izbicki's implementation.
 
 If we make our search query 'corona' to find articles about the pandemic, the following links are the most relevant according to PageRank:
-<pre><code>
-[In]: run pagerank.py --data=./lawfareblog.csv.gz --search_query=corona
+<pre><code>[In]: run pagerank.py --data=./lawfareblog.csv.gz --search_query=corona
 DEBUG:root:computing indices
 DEBUG:root:computing values
 INFO:root:rank=0 pagerank=9.3788e-04 url=www.lawfareblog.com/lawfare-podcast-united-nations-and-coronavirus-crisis
@@ -61,12 +59,10 @@ INFO:root:rank=5 pagerank=6.0841e-04 url=www.lawfareblog.com/why-congress-conduc
 INFO:root:rank=6 pagerank=5.9702e-04 url=www.lawfareblog.com/congressional-homeland-security-committees-seek-ways-support-state-federal-responses-coronavirus
 INFO:root:rank=7 pagerank=5.8340e-04 url=www.lawfareblog.com/paper-hearing-experts-debate-digital-contact-tracing-and-coronavirus-privacy-concerns
 INFO:root:rank=8 pagerank=5.6037e-04 url=www.lawfareblog.com/house-subcommittee-voices-concerns-over-us-management-coronavirus
-INFO:root:rank=9 pagerank=5.5212e-04 url=www.lawfareblog.com/livestream-house-oversight-committee-holds-hearing-government-coronavirus-response
-</code></pre>
+INFO:root:rank=9 pagerank=5.5212e-04 url=www.lawfareblog.com/livestream-house-oversight-committee-holds-hearing-government-coronavirus-response</code></pre>
 
 Next, we'll adjust our search query to 'trump':
-<pre><code>
-[In]: run pagerank.py --data=./lawfareblog.csv.gz --search_query=trump
+<pre><code>[In]: run pagerank.py --data=./lawfareblog.csv.gz --search_query=trump
 DEBUG:root:computing indices
 DEBUG:root:computing values
 INFO:root:rank=0 pagerank=5.6705e-03 url=www.lawfareblog.com/trump-asks-supreme-court-stay-congressional-subpeona-tax-returns
@@ -78,12 +74,10 @@ INFO:root:rank=5 pagerank=4.1355e-03 url=www.lawfareblog.com/how-trumps-approach
 INFO:root:rank=6 pagerank=3.9194e-03 url=www.lawfareblog.com/why-trump-cant-buy-greenland
 INFO:root:rank=7 pagerank=3.5939e-03 url=www.lawfareblog.com/oral-argument-summary-qassim-v-trump
 INFO:root:rank=8 pagerank=3.3013e-03 url=www.lawfareblog.com/dc-circuit-court-denies-trump-rehearing-mazars-case
-INFO:root:rank=9 pagerank=3.2977e-03 url=www.lawfareblog.com/second-circuit-rules-mazars-must-hand-over-trump-tax-returns-new-york-prosecutors
-</code></pre>
+INFO:root:rank=9 pagerank=3.2977e-03 url=www.lawfareblog.com/second-circuit-rules-mazars-must-hand-over-trump-tax-returns-new-york-prosecutors</code></pre>
 
 Finally, we'll change our search query to 'iran':
-<pre><code>
-[In]: run pagerank.py --data=./lawfareblog.csv.gz --search_query=iran
+<pre><code>[In]: run pagerank.py --data=./lawfareblog.csv.gz --search_query=iran
 DEBUG:root:computing indices
 DEBUG:root:computing values
 INFO:root:rank=0 pagerank=4.4333e-03 url=www.lawfareblog.com/praise-presidents-iran-tweets
@@ -95,8 +89,7 @@ INFO:root:rank=5 pagerank=1.4525e-03 url=www.lawfareblog.com/iranian-hostage-cri
 INFO:root:rank=6 pagerank=1.4419e-03 url=www.lawfareblog.com/announcing-united-states-and-use-force-against-iran-new-lawfare-e-book
 INFO:root:rank=7 pagerank=1.3405e-03 url=www.lawfareblog.com/us-names-iranian-revolutionary-guard-terrorist-organization-and-sanctions-international-criminal
 INFO:root:rank=8 pagerank=1.1074e-03 url=www.lawfareblog.com/iran-shoots-down-us-drone-domestic-and-international-legal-implications
-INFO:root:rank=9 pagerank=1.0752e-03 url=www.lawfareblog.com/israel-iran-syria-clash-and-law-use-force
-</code></pre>
+INFO:root:rank=9 pagerank=1.0752e-03 url=www.lawfareblog.com/israel-iran-syria-clash-and-law-use-force</code></pre>
 
 **Part 3: Concerns about the structure of webpages**
 Most websites have a lot of structure, as most pages are connected to the homepage and some other broad pages, like www.lawfareblog.com/topics. Because PageRank does link ranking, those sites that many pages link to will often, but not always, have a higher rating. If we examine the largest PageRanks across www.lawfareblog.com, we can see a several of these broad pages appear:
@@ -105,7 +98,7 @@ Most websites have a lot of structure, as most pages are connected to the homepa
 run pagerank.py --data=./lawfareblog.csv.gz
 </code></pre>
 
-But these pages are generally not useful if we want to learn what the blog's most popular content was. To collect data on articles, which will generally have fewer pages linking to them than broader pages, we can use the <pre><code>--filter_ratio</code></pre> argument. It removes "all pages with more links than the specified ration" (Prof. Izbicki). Now, we can estimate the most important articles:
+But these pages are generally not useful if we want to learn what the blog's most popular content was. To collect data on articles, which will generally have fewer pages linking to them than broader pages, we can use the <code>--filter_ratio</code> argument. It removes "all pages with more links than the specified ration" (Prof. Izbicki). Now, we can estimate the most important articles:
 
 <pre><code>
 run pagerank.py --data=./lawfareblog.csv.gz --filter_ratio=0.2

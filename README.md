@@ -127,7 +127,7 @@ INFO:root:rank=9 pagerank=1.4039e-01 url=www.lawfareblog.com/todays-headlines-an
 </code></pre>
 
 **Part 4: Eigengaps**
-The eigengap of the P barbar matrix is bounded by the alpha parameter. The size of the eigengap determines determines the speed at which the algorithm converges. If the eigengap of a matrix is large, then it will converge quickly even at alpha values that approach 1. If the eigengap is small, then only at smaller alpha values will the convergence occur quickly. We can run the following four commands to illustrate this
+The eigengap of the P barbar matrix is bounded by the alpha parameter. The size of the eigengap determines determines the speed at which the algorithm converges. If the eigengap of a matrix is large, then it will converge quickly even at alpha values that approach 1. If the eigengap is small, then only at smaller alpha values will the convergence occur quickly. We can run the following four commands to illustrate this:
 <pre><code>[In]: run pagerank.py --data=./lawfareblog.csv.gz --verbose 
 [In]: run pagerank.py --data=./lawfareblog.csv.gz --verbose --alpha=0.99999
 [In]: run pagerank.py --data=./lawfareblog.csv.gz --verbose --filter_ratio=0.2
@@ -206,7 +206,7 @@ INFO:root:rank=9 pagerank=4.9331e-02 url=www.lawfareblog.com/livestream-house-ar
 While these articles are mostly still related to the coronavirus, there are also some topics that are more tangential. For example, there's an important missile defense hearing ranked 9th that probably took place during the pandemic and was influenced by it, but is obviously not directly related to coronavirus.
 
 **Part 3: Finding articles that are related, but don't mention our query (cont.)**
-We can take a look at another example of the above, where articles are related, but do not explicitly mention the query. For 'iran', we ge the following results:
+We can take a look at another example of the above, where articles are related, but do not explicitly mention the query. For 'iran', we get the following results:
 <pre><code>[In]: run pagerank.py --data=./lawfareblog.csv.gz --filter_ratio=0.2 --personalization_vector_query=iran --search_query=-iran
 INFO:root:rank=0 pagerank=3.4031e-01 url=www.lawfareblog.com/omphalos
 INFO:root:rank=1 pagerank=1.9816e-01 url=www.lawfareblog.com/cancellation-algerias-elections-opportunity-democratization

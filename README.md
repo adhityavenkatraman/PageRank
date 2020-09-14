@@ -165,17 +165,58 @@ INFO:root:rank=9 pagerank=1.6020e-02 url=www.lawfareblog.com/water-wars-sinking-
 **Part 1: Basic Power Method Implementation**
 The personalization vector is alternative method of filtering via queries. The personalization vector determine which webpages are linked to most often from pages that are about the query itself. This is different than the previous <code>--search_query</code> argument which determines an overall PageRank, then filters for the highest ranked matches that are related to the query. To demonstrate this, we can compare the rankings of the same query when using the personalization vector versus the <code>--search_query</code> argument. 
 <pre><code>[In]: run pagerank.py --data=./lawfareblog.csv.gz --filter_ratio=0.2 --personalization_vector_query=corona
+INFO:root:rank=0 pagerank=6.4370e-01 url=www.lawfareblog.com/covid-19-speech-and-surveillance-response
+INFO:root:rank=1 pagerank=6.4367e-01 url=www.lawfareblog.com/lawfare-live-covid-19-speech-and-surveillance
+INFO:root:rank=2 pagerank=1.4585e-01 url=www.lawfareblog.com/chinatalk-how-party-takes-its-propaganda-global
+INFO:root:rank=3 pagerank=1.1526e-01 url=www.lawfareblog.com/rational-security-my-corona-edition
+INFO:root:rank=4 pagerank=1.1526e-01 url=www.lawfareblog.com/brexit-not-immune-coronavirus
+INFO:root:rank=5 pagerank=8.5548e-02 url=www.lawfareblog.com/trump-cant-reopen-country-over-state-objections
+INFO:root:rank=6 pagerank=8.2643e-02 url=www.lawfareblog.com/prosecuting-purposeful-coronavirus-exposure-terrorism
+INFO:root:rank=7 pagerank=8.2643e-02 url=www.lawfareblog.com/britains-coronavirus-response
+INFO:root:rank=8 pagerank=6.9671e-02 url=www.lawfareblog.com/lawfare-podcast-united-nations-and-coronavirus-crisis
+INFO:root:rank=9 pagerank=6.9566e-02 url=www.lawfareblog.com/lawfare-podcast-mom-and-dad-talk-clinical-trials-pandemic
 </code></pre>
 <pre><code>[In]: run pagerank.py --data=./lawfareblog.csv.gz --filter_ratio=0.2 --search_query=corona
+INFO:root:rank=0 pagerank=7.9973e-03 url=www.lawfareblog.com/house-oversight-committee-holds-day-two-hearing-government-coronavirus-response
+INFO:root:rank=1 pagerank=7.4162e-03 url=www.lawfareblog.com/lawfare-podcast-united-nations-and-coronavirus-crisis
+INFO:root:rank=2 pagerank=5.2602e-03 url=www.lawfareblog.com/livestream-house-oversight-committee-holds-hearing-government-coronavirus-response
+INFO:root:rank=3 pagerank=3.8407e-03 url=www.lawfareblog.com/britains-coronavirus-response
+INFO:root:rank=4 pagerank=3.7037e-03 url=www.lawfareblog.com/prosecuting-purposeful-coronavirus-exposure-terrorism
+INFO:root:rank=5 pagerank=3.4177e-03 url=www.lawfareblog.com/congress-needs-coronavirus-failsafe-its-too-late
+INFO:root:rank=6 pagerank=3.3267e-03 url=www.lawfareblog.com/paper-hearing-experts-debate-digital-contact-tracing-and-coronavirus-privacy-concerns
+INFO:root:rank=7 pagerank=3.2338e-03 url=www.lawfareblog.com/cyberlaw-podcast-how-israel-fighting-coronavirus
+INFO:root:rank=8 pagerank=3.1978e-03 url=www.lawfareblog.com/israeli-emergency-regulations-location-tracking-coronavirus-carriers
+INFO:root:rank=9 pagerank=3.0103e-03 url=www.lawfareblog.com/why-congress-conducting-business-usual-face-coronavirus
 </code></pre>
 
 **Part 2: Finding articles that are related, but don't mention our query**
 The personalization vector is especially useful because it tracks which articles are most relevant to the query. This means that if we want to learn about the indirect effects our query may be having, we can still use the same personalization vector search query. Meanwhile, we can use the <code>--search_query</code> argument to present only those articles do not include the query itself. We get the following results for 'corona':
 <pre><code>[In]: run pagerank.py --data=./lawfareblog.csv.gz --filter_ratio=0.2 --personalization_vector_query=corona --search_query=-corona
+INFO:root:rank=0 pagerank=6.4370e-01 url=www.lawfareblog.com/covid-19-speech-and-surveillance-response
+INFO:root:rank=1 pagerank=6.4367e-01 url=www.lawfareblog.com/lawfare-live-covid-19-speech-and-surveillance
+INFO:root:rank=2 pagerank=1.4585e-01 url=www.lawfareblog.com/chinatalk-how-party-takes-its-propaganda-global
+INFO:root:rank=3 pagerank=8.5548e-02 url=www.lawfareblog.com/trump-cant-reopen-country-over-state-objections
+INFO:root:rank=4 pagerank=6.9566e-02 url=www.lawfareblog.com/lawfare-podcast-mom-and-dad-talk-clinical-trials-pandemic
+INFO:root:rank=5 pagerank=6.3916e-02 url=www.lawfareblog.com/fault-lines-foreign-policy-quarantined
+INFO:root:rank=6 pagerank=5.9801e-02 url=www.lawfareblog.com/limits-world-health-organization
+INFO:root:rank=7 pagerank=5.4409e-02 url=www.lawfareblog.com/chinatalk-dispatches-shanghai-beijing-and-hong-kong
+INFO:root:rank=8 pagerank=4.9331e-02 url=www.lawfareblog.com/us-moves-dismiss-case-against-company-linked-ira-troll-farm
+INFO:root:rank=9 pagerank=4.9331e-02 url=www.lawfareblog.com/livestream-house-armed-services-committee-holds-hearing-priorities-missile-defense
 </code></pre>
+While these articles are mostly still related to the coronavirus, there are also some topics that are more tangential. For example, there's an important missile defense hearing ranked 9th that probably took place during the pandemic and was influenced by it, but is obviously not directly related to coronavirus.
 
 **Part 3: Finding articles that are related, but don't mention our query (cont.)**
 We can take a look at another example of the above, where articles are related, but do not explicitly mention the query. For 'iran', we ge the following results:
 <pre><code>[In]: run pagerank.py --data=./lawfareblog.csv.gz --filter_ratio=0.2 --personalization_vector_query=iran --search_query=-iran
+INFO:root:rank=0 pagerank=3.4031e-01 url=www.lawfareblog.com/omphalos
+INFO:root:rank=1 pagerank=1.9816e-01 url=www.lawfareblog.com/cancellation-algerias-elections-opportunity-democratization
+INFO:root:rank=2 pagerank=1.9586e-01 url=www.lawfareblog.com/yemen-houthi-strategy-has-promise-and-risk
+INFO:root:rank=3 pagerank=1.9519e-01 url=www.lawfareblog.com/haftar-attacking-tripoli-us-needs-re-engage-libya
+INFO:root:rank=4 pagerank=1.9519e-01 url=www.lawfareblog.com/how-trumps-approach-middle-east-ignores-past-future-and-human-condition
+INFO:root:rank=5 pagerank=1.4340e-01 url=www.lawfareblog.com/trump-asks-supreme-court-stay-congressional-subpeona-tax-returns
+INFO:root:rank=6 pagerank=1.3771e-01 url=www.lawfareblog.com/blurred-distinction-between-armed-conflict-and-civil-unrest-recent-events-gaza
+INFO:root:rank=7 pagerank=1.3628e-01 url=www.lawfareblog.com/document-july-2018-nato-summit-communique
+INFO:root:rank=8 pagerank=1.3628e-01 url=www.lawfareblog.com/document-sen-tim-kaine-presses-pentagon-legal-definition-collective-self-defense
+INFO:root:rank=9 pagerank=1.3615e-01 url=www.lawfareblog.com/al-kibar-strike-what-difference-26-years-make
 </code></pre>
-
+I thought that this was an interesting extension especially to learn more about Iran's international influence. Iran has slowly been growing as a regional player in the Middle East and parts of North Africa  over the past few decades. That impact is pretty clear in the articles that are ranked highest, as there are articles about Yemen, Libya, and the Gaza Strip. The appearance of a few articles about Iran's relationship with the US also speaks to the bombing and resulting tensions that arose in early 2020. These results indicate that http://www.lawfareblog.com/ considers American relations and regional Middle Eastern politics to be some of the most important topics related to Iran.

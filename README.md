@@ -45,7 +45,7 @@ INFO:root:rank=5 pagerank=1.4440e-01 url=1
 </code></pre>
 
 **Part 2: Search Queries**
-Next, we can use a number of command line arguments to refine our search. The algorithm will now return those pages most relevant to our queries. The <pre><code>--search_query</code></pre> argument accepts a string and compares it with each links and filters out those links that do not include the query. For this portion, I use a dataset prepared by Professor Mike Izbicki that graphs hyperlinks from the defense blog www.lawfareblog.com. From this point forward, I will not use the verbose command to make results more concise. The results below are similar to those obtained in Prof. Izbicki's implementation.
+Next, we can use a number of command line arguments to refine our search. The algorithm will now return those pages most relevant to our queries. The <code>--search_query</code>argument accepts a string and compares it with each links and filters out those links that do not include the query. For this portion, I use a dataset prepared by Professor Mike Izbicki that graphs hyperlinks from the defense blog www.lawfareblog.com. From this point forward, I will not use the verbose command to make results more concise. The results below are similar to those obtained in Prof. Izbicki's implementation.
 
 If we make our search query 'corona' to find articles about the pandemic, the following links are the most relevant according to PageRank:
 <pre><code>

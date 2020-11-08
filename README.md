@@ -1,13 +1,13 @@
 # PageRank
 
-In this project, I attempt to replicate the link-based ranking system developed by Sergey Brin and Larry Page in their 1998 paper "The PageRank Citation Ranking: Bringing Order to the Web”. This algorithm remains the foundation for Google's web search tools. Langville and Meyer provide additional guidance on the construction and components of PageRank in their 2004 paper "Deeper Inside PageRank". Professor Mike Izbicki provided valuable guidance throughout this project.
+In this project, I attempt to replicate the link-based ranking system developed by Sergey Brin and Larry Page in their 1998 paper "The PageRank Citation Ranking: Bringing Order to the Web”. This algorithm remains the foundation for Google's web search tools. Langville and Meyer provide additional guidance on the construction and components of PageRank in their 2004 paper "Deeper Inside PageRank". 
 
 We begin by constructing a Markov matrix P, where each entry ij "is the proabability of moving from state i to state j" (Langville and Meyer 2004). This matrix is transformed into a stochastic, irreducible, and primitive matrix. This Markov matrix will converge to the dominant eigenvector. This vector is the PageRank vector which indicates the importance of each webpage within a graph. To do so, Brin and Page use the power method, which stores just the previous iterate for each iteration, and converges quickly for the stochastic, irreducible, and primitive P (P bar bar) matrix.
 
 ## Task 1: Implementing the Power Method
 **Part 1: Basic Power Method Implementation**
 After implementing the algorithm, we can test the basic algorithm on a 6 webpage graph, similar to the one used in *Langville and Meyer 2004*. We obtain the following result:
-Note that the verbose tag has been turned on to demonstrate how in the DEBUG statements, the algorithm converges, toward the constant *epsilon* term 1e-6. The pages have been ranked with the fourth URL being the highest ranked, and the first URL being the lowest. These results are similar to those obtained in Prof. Izbicki's implementation.
+Note that the verbose tag has been turned on to demonstrate how in the DEBUG statements, the algorithm converges, toward the constant *epsilon* term 1e-6. The pages have been ranked with the fourth URL being the highest ranked, and the first URL being the lowest. These results are validated by Mike Izbicki's implementation.
 
 <pre><code>[In]: run pagerank.py --data=small.csv.gz --verbose
 DEBUG:root:computing indices

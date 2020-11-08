@@ -2,11 +2,14 @@
 
 In this project, I attempt to replicate the link-based ranking system developed by Sergey Brin and Larry Page in their 1998 paper "The PageRank Citation Ranking: Bringing Order to the Web”. This algorithm remains the foundation for Google's web search tools. Langville and Meyer provide additional guidance on the construction and components of PageRank in their 2004 paper "Deeper Inside PageRank". 
 
-We begin by constructing a Markov matrix <img src="https://render.githubusercontent.com/render/math?math=P">, where each entry <img src="https://render.githubusercontent.com/render/math?math=ij"> "is the proabability of moving from state i to state j" (Langville and Meyer 2004). This matrix is transformed into a stochastic, irreducible, and primitive matrix. This Markov matrix will converge to the dominant eigenvector. This vector is the PageRank vector which indicates the importance of each webpage within a graph. To do so, Brin and Page use the power method, which stores just the previous iterate for each iteration, and converges quickly for the stochastic, irreducible, and primitive <img src="https://render.githubusercontent.com/render/math?math=\bar{P}"> matrix.
+We begin by constructing a Markov matrix <img src="https://render.githubusercontent.com/render/math?math=P">, where each entry <img src="https://render.githubusercontent.com/render/math?math=ij"> "is the proabability of moving from state i to state j" (Langville and Meyer 2004). This hyperlink matrix is transformed into a stochastic, irreducible, and primitive matrix. This Markov matrix will converge to the dominant eigenvector. This vector is the PageRank vector which indicates the importance of each webpage within a graph. To do so, Brin and Page use the power method, which stores just the previous iterate for each iteration, and converges quickly for the stochastic, irreducible, and primitive <img src="https://render.githubusercontent.com/render/math?math=\bar{P}"> matrix.
 
-**Part 1: Basic Power Method Implementation**
+Visit the pagerank.py file to view the implementation. In particular, the power_method and make_personalization_vector functions are at the core of the implementation. The power_method function implements <img src="https://render.githubusercontent.com/render/math?math=x^{(k)T}=\alpha%20x^{(k-1)T}%20P%20%2B%20(\alpha%20x^{(k-1)T}%20a%20%2B%20(1-\alpha))v^{T}">. This algorithm is iterated until it converges to a sufficiently low error,, often 1e-6; the resulting eigenvector yeilds the PageRank vector. Note that because the function applies the power method to thex relatively sparse hyperlink matrix, converting it into a stochastic, irreducible, and primitive matrix, the runtime of the algorithm is considerably less than if we explicitly defined the latter matrix. Meanwhile, the make_personalization_vector method accepts a query, then creates a vector of articles that mention the query. This allows our power_method function to complete a more targeted ranking of the pages that are most often linked to pages we already know are relevant.
+
+**Part 1: Testing the Basic Power Method Implementation**
+
 After implementing the algorithm, we can test the basic algorithm on a 6 webpage graph, similar to the one used in *Langville and Meyer 2004*. We obtain the following result:
-Note that the verbose tag has been turned on to demonstrate how in the DEBUG statements, the algorithm converges, toward the constant *epsilon* term 1e-6. The pages have been ranked with the fourth URL being the highest ranked, and the first URL being the lowest. These results are validated by Mike Izbicki's implementation.
+Note that the verbose tag has been turned on to demonstrate how in the DEBUG statements, the algorithm converges, toward the constant *epsilon* term 1e-6. The pages have been ranked with the fourth URL being the highest ranked, and the first URL being the lowest. These results are validated by Mike Izbicki's implementation. 
 
 <pre><code>[In]: run pagerank.py --data=small.csv.gz --verbose
 DEBUG:root:computing indices
@@ -126,7 +129,7 @@ INFO:root:rank=9 pagerank=1.4039e-01 url=www.lawfareblog.com/todays-headlines-an
 </code></pre>
 
 **Part 4: Eigengaps**
-The eigengap of the P barbar matrix is bounded by the alpha parameter. The size of the eigengap determines determines the speed at which the algorithm converges. If the eigengap of a matrix is large, then it will converge quickly even at alpha values that approach 1. If the eigengap is small, then only at smaller alpha values will the convergence occur quickly. We can run the following four commands to illustrate this:
+The eigengap of the P barbar matrix is bounded by the $\alpha$ parameter. The size of the eigengap determines determines the speed at which the algorithm converges. If the eigengap of a matrix is large, then it will converge quickly even at alpha values that approach 1. If the eigengap is small, then only at smaller alpha values will the convergence occur quickly. We can run the following four commands to illustrate this:
 <pre><code>[In]: run pagerank.py --data=./lawfareblog.csv.gz --verbose 
 [In]: run pagerank.py --data=./lawfareblog.csv.gz --verbose --alpha=0.99999
 [In]: run pagerank.py --data=./lawfareblog.csv.gz --verbose --filter_ratio=0.2
@@ -162,7 +165,7 @@ INFO:root:rank=9 pagerank=1.6020e-02 url=www.lawfareblog.com/water-wars-sinking-
 
 ## Task 2: Implementing the Personalization Vector
 **Part 1: Basic Power Method Implementation**
-The personalization vector is alternative method of filtering via queries. The personalization vector determine which webpages are linked to most often from pages that are about the query itself. This is different than the previous <code>--search_query</code> argument which determines an overall PageRank, then filters for the highest ranked matches that are related to the query. To demonstrate this, we can compare the rankings of the same query when using the personalization vector versus the <code>--search_query</code> argument. 
+The personalization vector is alternative method of filtering via queries. The personalization vector determines which webpages are linked to most often from pages that are about the query itself. This is different than the previous <code>--search_query</code> argument which determines an overall PageRank, then filters for the highest ranked matches that are related to the query. To demonstrate this, we can compare the rankings of the same query when using the personalization vector versus the <code>--search_query</code> argument. 
 <pre><code>[In]: run pagerank.py --data=./lawfareblog.csv.gz --filter_ratio=0.2 --personalization_vector_query=corona
 INFO:root:rank=0 pagerank=6.4370e-01 url=www.lawfareblog.com/covid-19-speech-and-surveillance-response
 INFO:root:rank=1 pagerank=6.4367e-01 url=www.lawfareblog.com/lawfare-live-covid-19-speech-and-surveillance

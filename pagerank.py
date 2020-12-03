@@ -2,15 +2,15 @@
 
 '''
 This file calculates pagerank vectors for small-scale webgraphs.
-See the README.md for example usage.
 '''
 
 import math
 import torch
 import gzip
 import csv
-
+import gensim.downloader
 import logging
+vectors = gensim.downloader.load('glove-twitter-25')
 
 
 class WebGraph():
@@ -116,12 +116,15 @@ class WebGraph():
     def power_method(self, v=None, x0=None, alpha=0.85, max_iterations=1000, epsilon=1e-6):
         '''
         This function implements the power method for computing the pagerank.
-
-        The self.P variable stores the $P$ matrix.
-        You will have to compute the $a$ vector and implement Equation 5.1 from "Deeper Inside Pagerank."
         '''
         with torch.no_grad():
             n = self.P.shape[0]
+
+            # 
+            nondangling_nodes = torch.sparse.sum(self.P,1).indices()
+            a = torch.ones([n,1])
+            a[nondangling_nodes] = 0
+
             # create variables if none given
             if v is None:
                 v = torch.Tensor([1/n]*n)
@@ -132,30 +135,27 @@ class WebGraph():
                 x0 = torch.Tensor([1/(math.sqrt(n))]*n)
                 x0 = torch.unsqueeze(x0,1)
             x0 /= torch.norm(x0)
-            a=torch.ones([n,1])
-            nondangling_nodes = torch.sparse.sum(self.P,1).indices()
-            for i in nondangling_nodes:
-                a[i,:]=torch.zeros(1,1)
-            x = x0.squeeze()
-            for k in range(0,max_iterations):
-                xold=x
-                alphax = alpha*xold.t()    #constant times 1xn = 1xn
-                vectorterm1 = (self.P.t() @ xold.t()).t()  #((nxn)T mtimes (1xn)T)T    #mtimes=matrixmultiplication
-                scalarsubterm1 = alphax@a    #1xn mtimes nx1 = 1x1
-                scalarsubterm2 = (1-alpha)
-                scalarterm = scalarsubterm1 + scalarsubterm2
-                vectorterm2 = ((scalarterm)*v.t())    #scalar times 1xn = 1xn vector
-                x = (vectorterm1 + vectorterm2)    #add terms and take the transpose of the final pi vector
-                x /= torch.norm(x)  #normalize the pagerank vector's length
-                x = x.t()
-                accuracy=torch.norm(x-xold).item()  #accuracy condition
-                if accuracy < epsilon:    
+
+            # main loop
+            xprev = x0
+            x = xprev.detach().clone()
+            for i in range(max_iterations):
+                xprev = x.detach().clone()
+                q = (alpha*x.t()@a + (1-alpha)) * v.t()
+                x = torch.sparse.addmm(
+                        q.t(),
+                        self.P.t(),
+                        x,
+                        beta=1,
+                        alpha=alpha
+                        )
+                x /= torch.norm(x)
+                accuracy = torch.norm(x-xprev)
+                logging.debug('i='+str(i)+' accuracy='+str(accuracy))
+                if accuracy < epsilon:
                     break
-                if args.search_query=='':
-                    logging.info(f'i={k} accuracy={accuracy}')
-                else:
-                    pass
-            return x
+
+            return x.squeeze()
 
     def search(self, pi, query='', max_results=10):
         '''
@@ -203,7 +203,15 @@ def url_satisfies_query(url, query):
     '''
     satisfies = False
     terms = query.split()
-
+    
+    get_similar=query.split()
+    for word in get_similar:
+        if '-' in word:
+            pass
+        else:
+            words = vectors.most_similar(word,topn=5)
+            for i in range(len(words)):
+                terms.append(words[i][0])
     num_terms=0
     for term in terms:
         if term[0] != '-':
